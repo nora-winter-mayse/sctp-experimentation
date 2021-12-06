@@ -16,9 +16,9 @@ public class Client implements Runnable {
     @Override
     public void run() {
 
-        SctpChannel sctpChannel;
+        SctpChannel channel;
         try {
-            sctpChannel = SctpChannel.open(new InetSocketAddress("localhost", 1000), 0, 0);
+            channel = SctpChannel.open(new InetSocketAddress("localhost", 1000), 0, 0);
         } catch (IOException e) {
             System.out.println("Failed to init client: " + e);
             return;
@@ -28,7 +28,7 @@ public class Client implements Runnable {
         SecretNotificationHandler secretNotificationHandler = new SecretNotificationHandler();
         MessageInfo messageInfo;
         try {
-            messageInfo = sctpChannel.receive(secretBuffer, new SecretChangeNotificationContext(), secretNotificationHandler);
+            messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(), secretNotificationHandler);
         } catch (IOException e) {
             System.out.println("Failed while receiving message: " + e);
             return;
@@ -40,13 +40,20 @@ public class Client implements Runnable {
             printBytes(bytes);
 
             try {
-                messageInfo = sctpChannel.receive(secretBuffer, new SecretChangeNotificationContext(), secretNotificationHandler);
+                messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(), secretNotificationHandler);
             } catch (IOException e) {
                 System.out.println("Failed while receiving message: " + e);
                 return;
             }
         }
+        secretBuffer.clear();
 
+        try {
+            channel.close();
+        } catch (IOException e) {
+            System.out.println("Client channel failed to close");
+        }
+        System.out.println("Client is finished");
     }
 
     private void printBytes(byte[] bytes) {

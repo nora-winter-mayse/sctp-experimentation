@@ -4,6 +4,8 @@ import client.Client;
 import server.SecretProviderImpl;
 import server.Server;
 
+import java.util.Scanner;
+
 public class Experiment {
 
     public static void main(String[] args) {
@@ -15,5 +17,9 @@ public class Experiment {
 
         Thread clientThread = new Thread(client);
         clientThread.start();
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Press any key to finish");
+        scanner.nextLine();
     }
 }

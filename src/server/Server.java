@@ -10,13 +10,11 @@ import java.nio.ByteBuffer;
 
 public class Server implements Runnable {
 
-    private int iterations;
     private final SecretProvider secretProvider;
     private InetSocketAddress originalAddress;
 
     public Server(SecretProvider secretProvider) {
         this.secretProvider = secretProvider;
-        iterations = 0;
         originalAddress = new InetSocketAddress(1000);
     }
 
@@ -54,7 +52,6 @@ public class Server implements Runnable {
             } finally {
                 secretBuffer.clear();
             }
-            iterations++;
         }
     }
 

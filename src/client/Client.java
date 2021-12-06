@@ -32,7 +32,7 @@ public class Client implements Runnable {
         SecretNotificationHandler secretNotificationHandler = new SecretNotificationHandler();
         MessageInfo messageInfo;
         try {
-            messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(), secretNotificationHandler);
+            messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(clientID), secretNotificationHandler);
         } catch (IOException e) {
             System.out.println("Failed while receiving message: " + e);
             return;
@@ -48,7 +48,7 @@ public class Client implements Runnable {
             }
 
             try {
-                messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(), secretNotificationHandler);
+                messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(clientID), secretNotificationHandler);
             } catch (IOException e) {
                 System.out.println("Failed while receiving message: " + e);
                 return;

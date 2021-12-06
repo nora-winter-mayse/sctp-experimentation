@@ -6,21 +6,25 @@ public class SecretNotificationHandler extends AbstractNotificationHandler<Secre
 
     @Override
     public HandlerResult handleNotification(AssociationChangeNotification notification, SecretChangeNotificationContext attachment) {
+        System.out.println("An association change notification has been received by " + attachment.getClientID());
         return HandlerResult.CONTINUE;
     }
 
     @Override
     public HandlerResult handleNotification(PeerAddressChangeNotification notification, SecretChangeNotificationContext attachment) {
+        System.out.println("A peer address change notification has been received by " + attachment.getClientID());
         return isPeerAddressChangeRecoverable(notification) ? HandlerResult.CONTINUE : HandlerResult.RETURN;
     }
 
     @Override
     public HandlerResult handleNotification(SendFailedNotification notification, SecretChangeNotificationContext attachment) {
+        System.out.println("An send failed notification has been received by " + attachment.getClientID());
         return HandlerResult.RETURN;
     }
 
     @Override
     public HandlerResult handleNotification(ShutdownNotification notification, SecretChangeNotificationContext attachment) {
+        System.out.println("A shutdown notification has been received by " + attachment.getClientID());
         return HandlerResult.RETURN;
     }
 

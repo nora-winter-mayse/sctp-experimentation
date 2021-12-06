@@ -51,11 +51,6 @@ public class Server implements Runnable {
             } finally {
                 secretBuffer.clear();
             }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                System.out.println("Sleep was interrupted...");
-            }
         }
     }
 }

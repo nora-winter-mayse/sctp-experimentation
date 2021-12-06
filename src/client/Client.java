@@ -30,14 +30,15 @@ public class Client implements Runnable {
 
         ByteBuffer secretBuffer = ByteBuffer.allocate(5);
         SecretNotificationHandler secretNotificationHandler = new SecretNotificationHandler();
-        MessageInfo messageInfo;
-        try {
-            messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(clientID), secretNotificationHandler);
-        } catch (IOException e) {
-            System.out.println("Failed while receiving message: " + e);
-            return;
-        }
-        while(messageInfo != null) {
+        while(true) {
+            MessageInfo messageInfo;
+            try {
+                messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(clientID), secretNotificationHandler);
+                channel.close();
+            } catch (IOException e) {
+                System.out.println("Failed while receiving message: " + e);
+                return;
+            }
             secretBuffer.flip();
             byte[] bytes = new byte[5];
             secretBuffer.get(bytes, 0, 5);
@@ -47,20 +48,14 @@ public class Client implements Runnable {
                 System.out.println("An incorrect secret was presented for client " + clientID);
             }
 
-            try {
-                messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(clientID), secretNotificationHandler);
-            } catch (IOException e) {
-                System.out.println("Failed while receiving message: " + e);
-                return;
-            }
             secretBuffer.clear();
+            System.out.println("Client is finished");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                System.out.println("Client sleep was interrupted...");
+            }
         }
 
-        try {
-            channel.close();
-        } catch (IOException e) {
-            System.out.println("Client channel failed to close");
-        }
-        System.out.println("Client is finished");
     }
 }

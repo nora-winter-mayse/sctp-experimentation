@@ -48,9 +48,9 @@ public class Server implements Runnable {
 
             try {
                 instanceChannel.send(secretBuffer, messageInfo);
-                //on the second iteration, bind a new address to trigger the event
-                if (iterations == 1) {
-                    baseChannel.bind(new InetSocketAddress(1001));
+                //on the third iteration, terminate prematurely without warning to trigger peer address change
+                if (iterations == 2) {
+                    return;
                 }
                 instanceChannel.close();
             } catch (IOException e) {

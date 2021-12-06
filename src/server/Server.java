@@ -42,6 +42,7 @@ public class Server implements Runnable {
                 return;
             }
 
+            System.out.println("Fetching secret for ClientA");
             secretBuffer.put(secretProvider.generateSecret("ClientA"));
             secretBuffer.flip();
             MessageInfo messageInfo = MessageInfo.createOutgoing(null, 0);
@@ -49,9 +50,6 @@ public class Server implements Runnable {
             try {
                 instanceChannel.send(secretBuffer, messageInfo);
                 //on the third iteration, terminate prematurely without warning to trigger peer address change
-                if (iterations == 2) {
-                    return;
-                }
                 instanceChannel.close();
             } catch (IOException e) {
                 System.out.println("Failed to send message: " + e);

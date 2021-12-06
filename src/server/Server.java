@@ -47,12 +47,6 @@ public class Server implements Runnable {
 
             try {
                 instanceChannel.send(secretBuffer, messageInfo);
-
-                //on the third iteration, terminate prematurely without warning to trigger peer address change
-                if (iterations > 2) {
-                    baseChannel.close();
-                    baseChannel = initBaseChannel();
-                }
                 instanceChannel.close();
             } catch (IOException e) {
                 System.out.println("Failed to send message: " + e);

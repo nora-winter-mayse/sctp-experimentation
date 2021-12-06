@@ -20,17 +20,17 @@ public class Client implements Runnable {
     @Override
     public void run() {
 
-        SctpChannel channel;
-        try {
-            channel = SctpChannel.open(new InetSocketAddress("localhost", 1000), 0, 1);
-        } catch (IOException e) {
-            System.out.println("Failed to init client: " + e);
-            return;
-        }
-
         ByteBuffer secretBuffer = ByteBuffer.allocate(5);
         SecretNotificationHandler secretNotificationHandler = new SecretNotificationHandler();
         while(true) {
+            SctpChannel channel;
+            try {
+                channel = SctpChannel.open(new InetSocketAddress("localhost", 1000), 0, 1);
+            } catch (IOException e) {
+                System.out.println("Failed to init client: " + e);
+                return;
+            }
+
             MessageInfo messageInfo;
             try {
                 messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(clientID), secretNotificationHandler);

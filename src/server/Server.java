@@ -10,10 +10,14 @@ import java.nio.ByteBuffer;
 
 public class Server implements Runnable {
 
-    private SecretProvider secretProvider;
+    private int iterations;
+    private final SecretProvider secretProvider;
+    private InetSocketAddress originalAddress;
 
     public Server(SecretProvider secretProvider) {
         this.secretProvider = secretProvider;
+        iterations = 0;
+        originalAddress = new InetSocketAddress(1000);
     }
 
     @Override
@@ -21,7 +25,7 @@ public class Server implements Runnable {
         SctpServerChannel baseChannel;
         try {
             baseChannel = SctpServerChannel.open();
-            baseChannel.bind(new InetSocketAddress(1000));
+            baseChannel.bind(originalAddress);
         } catch (IOException e) {
             System.out.println("Unrecoverable IOException has occurred on server during startup: " + e);
             return;
@@ -44,6 +48,10 @@ public class Server implements Runnable {
 
             try {
                 instanceChannel.send(secretBuffer, messageInfo);
+                //on the second iteration, bind a new address to trigger the event
+                if (iterations == 1) {
+                    baseChannel.bind(new InetSocketAddress(1001));
+                }
                 instanceChannel.close();
             } catch (IOException e) {
                 System.out.println("Failed to send message: " + e);
@@ -51,6 +59,7 @@ public class Server implements Runnable {
             } finally {
                 secretBuffer.clear();
             }
+            iterations++;
         }
     }
 }

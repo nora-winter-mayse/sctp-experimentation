@@ -2,7 +2,7 @@ package server;
 
 public interface SecretProvider {
 
-    byte[] generateSecret();
+    byte[] generateSecret(String clientID);
 
     int getSecretSize();
 }

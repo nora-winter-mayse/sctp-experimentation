@@ -9,8 +9,12 @@ import java.nio.ByteBuffer;
 
 public class Client implements Runnable {
 
-    public Client() {
+    private final String clientID;
+    private final SecretValidator secretValidator;
 
+    public Client(String clientID, SecretValidator secretValidator) {
+        this.clientID = clientID;
+        this.secretValidator = secretValidator;
     }
 
     @Override
@@ -37,7 +41,11 @@ public class Client implements Runnable {
             secretBuffer.flip();
             byte[] bytes = new byte[5];
             secretBuffer.get(bytes, 0, 5);
-            printBytes(bytes);
+            if (secretValidator.isSecretCorrect(clientID, bytes)) {
+                System.out.println("The correct secret was presented for client " + clientID);
+            } else {
+                System.out.println("An incorrect secret was presented for client " + clientID);
+            }
 
             try {
                 messageInfo = channel.receive(secretBuffer, new SecretChangeNotificationContext(), secretNotificationHandler);
@@ -45,8 +53,8 @@ public class Client implements Runnable {
                 System.out.println("Failed while receiving message: " + e);
                 return;
             }
+            secretBuffer.clear();
         }
-        secretBuffer.clear();
 
         try {
             channel.close();
@@ -54,11 +62,5 @@ public class Client implements Runnable {
             System.out.println("Client channel failed to close");
         }
         System.out.println("Client is finished");
-    }
-
-    private void printBytes(byte[] bytes) {
-        for (byte element : bytes) {
-            System.out.print(Integer.toBinaryString(element));
-        }
     }
 }

@@ -1,7 +1,7 @@
 package experiment;
 
 import client.Client;
-import server.SecretProviderImpl;
+import common.SecretManager;
 import server.Server;
 
 import java.util.Scanner;
@@ -9,8 +9,9 @@ import java.util.Scanner;
 public class Experiment {
 
     public static void main(String[] args) {
-        Server server = new Server(new SecretProviderImpl());
-        Client client = new Client();
+        SecretManager secretManager = new SecretManager();
+        Server server = new Server(secretManager);
+        Client client = new Client("ClientA", secretManager);
 
         Thread serverThread = new Thread(server);
         serverThread.start();
@@ -21,5 +22,7 @@ public class Experiment {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Press any key to finish");
         scanner.nextLine();
+        serverThread.interrupt();
+        clientThread.interrupt();
     }
 }

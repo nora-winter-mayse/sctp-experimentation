@@ -38,7 +38,7 @@ public class Server implements Runnable {
                 return;
             }
 
-            secretBuffer.put(secretProvider.generateSecret());
+            secretBuffer.put(secretProvider.generateSecret("ClientA"));
             secretBuffer.flip();
             MessageInfo messageInfo = MessageInfo.createOutgoing(null, 0);
 

@@ -39,8 +39,12 @@ public class SecretManager implements SecretProvider, SecretValidator {
     @Override
     public boolean isSecretCorrect(String clientID, byte[] secret) {
         return secretState.containsKey(clientID) &&
-                (Arrays.equals(secretState.get(clientID).getCurrentSecret(), secret)
-                    || Arrays.equals(secretState.get(clientID).getNextSecret(), secret));
+                secretIsRecentlyIssued(clientID, secret);
+    }
+
+    private boolean secretIsRecentlyIssued(String clientID, byte[] secret) {
+        return Arrays.equals(secretState.get(clientID).getCurrentSecret(), secret)
+                || Arrays.equals(secretState.get(clientID).getNextSecret(), secret);
     }
 
     private void updateState(String client, byte[] newSecret) {

@@ -24,8 +24,7 @@ public class Server implements Runnable {
     public void run() {
         SctpServerChannel baseChannel;
         try {
-            baseChannel = SctpServerChannel.open();
-            baseChannel.bind(originalAddress);
+            baseChannel = initBaseChannel();
         } catch (IOException e) {
             System.out.println("Unrecoverable IOException has occurred on server during startup: " + e);
             return;
@@ -51,7 +50,8 @@ public class Server implements Runnable {
 
                 //on the third iteration, terminate prematurely without warning to trigger peer address change
                 if (iterations > 2) {
-                    instanceChannel.shutdown();
+                    baseChannel.close();
+                    baseChannel = initBaseChannel();
                 }
                 instanceChannel.close();
             } catch (IOException e) {
@@ -62,5 +62,12 @@ public class Server implements Runnable {
             }
             iterations++;
         }
+    }
+
+    private SctpServerChannel initBaseChannel() throws IOException {
+        SctpServerChannel baseChannel;
+        baseChannel = SctpServerChannel.open();
+        baseChannel.bind(originalAddress);
+        return baseChannel;
     }
 }

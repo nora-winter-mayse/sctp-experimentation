@@ -22,7 +22,7 @@ public class Client implements Runnable {
 
         SctpChannel channel;
         try {
-            channel = SctpChannel.open(new InetSocketAddress("localhost", 1000), 0, 0);
+            channel = SctpChannel.open(new InetSocketAddress("localhost", 1000), 0, 1);
         } catch (IOException e) {
             System.out.println("Failed to init client: " + e);
             return;

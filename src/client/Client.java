@@ -35,7 +35,7 @@ public class Client implements Runnable {
         }
         while(messageInfo != null) {
             secretBuffer.flip();
-            byte[] bytes = new byte[128];
+            byte[] bytes = new byte[5];
             secretBuffer.get(bytes, 0, 5);
             printBytes(bytes);
 
